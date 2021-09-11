@@ -1,0 +1,26 @@
+config:
+  project: repeat
+  description:
+    short: 'duplicating pipe fitting'
+    medium: 'Copy input to output until EOF, then repeat output of the entire stream one or more times.'
+  year: 2021
+  author: 'Matt Krueger <mkrueger@rstms.net>'
+  license: MIT
+  url: https://www.github.com/rstms/repeat
+  python_version: 3.8
+  usage: "{{ cli.usage }}"
+  modules:
+    install:
+      - click
+    test:
+      - pytest
+      - pytest-click
+      - tox
+    dev:
+      - bumpversion
+      - twine
+      - yapf
+      - sphinx
+      - sphinx-click
+      - sphinx-rtd-theme
+      - sphinx-serve

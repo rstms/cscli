@@ -1,0 +1,77 @@
+#!/bin/bash
+# vim:ft=sh
+
+set -e
+
+module_template=./module_template
+template_dir=./template
+config=./config.yaml
+
+
+cat -<<EOF
+
+-------------------------------
+ Module Template Configuration
+-------------------------------
+
+Configuration: ${config}
+
+This script will rename the module_template, then
+it will apply the configuration variables to any 
+files  containing the '{{ template }}' pattern.
+
+EOF
+
+fail() {
+  echo >&2 "Failed: $1"
+  exit 1
+}
+
+verify() {
+  read -p "${1}? [no] :" OK;
+  [[ $OK =~ ^[Yy][Ee]*[Ss]*$ ]]
+}
+
+# find all files with jinja2 template pattern 
+template_files() {
+  echo $(
+    egrep -R '{{.*}}' |\
+    grep -v config.yaml |\
+    cut -d: -f1 |\
+    sort |
+    uniq
+  )
+}
+
+yq --version || fail 'yq is required (pip install yq)'
+yasha --version || fail 'yasha is required (pip install yasha)'
+
+project=$(yq <$config -r .config.project || fail "Can't read project name from $config"
+echo "Project name: ${project}"
+
+mv --verbose --no-clobber $module_template $project || fail "Module template $module_template not found."
+mkdir $template_dir || fail "Can't create template backup directory."
+
+echo
+echo "Template pattern found in: ['
+for target in $(template_files); do
+  echo "  $target"
+done
+echo ']'
+echo 
+
+verify "These files will be edited.  Confirm" || fail "Cowardly refusing to continue."
+
+echo "Ok, here we go..."
+
+for target in $(template_files); do
+  template=$template_dir/$target
+  template_subdir=${template/%$(basename $template)}
+  if [ ! -d "$template_subdir" ]; then
+    echo mkdir -p --verbose $template_subdir
+  fi
+  echo cp --verbose --no-clobber $target $template
+  echo yasha -mode pedantic -v $config -o $target $template
+done
+
+echo "Configuration complete."
