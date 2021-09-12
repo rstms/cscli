@@ -37,6 +37,7 @@ def mkpasswd(length):
     return ''.join([secrets.choice(codex) for _ in range(length)])
 
 @click.group(name='cscli')
+@click.version_option()
 @click.option('-u', '--username', type=str, help="override env var CLOUDSIGMA_USERNAME]")
 @click.option('-p', '--password', type=str, help="override env var CLOUDSIGMA_PASSWORD]")
 @click.option('-r', '--region', type=str, help="override env var CLOUDSIGMA_REGION]")
