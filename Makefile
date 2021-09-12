@@ -12,6 +12,4 @@ devinstall: uninstall ## local install in editable mode for development
 clean: ## remove all build, test, coverage and Python artifacts
 	for clean in $(call included,clean); do ${MAKE} $$clean; done
 
-fmt: yapf-fmt ## run yapf formatter
-
 include $(wildcard make.include/*.mk)
