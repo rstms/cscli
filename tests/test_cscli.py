@@ -3,11 +3,9 @@
 """Tests for `cscli` package."""
 
 import pytest
-
 from click.testing import CliRunner
 
-from cscli import cscli
-from cscli import cli
+from cscli import cli, CloudSigmaClient
 
 
 @pytest.fixture
@@ -31,7 +29,7 @@ def test_command_line_interface():
     runner = CliRunner()
     result = runner.invoke(cli.main)
     assert result.exit_code == 0
-    assert 'cscli.cli.main' in result.output
-    help_result = runner.invoke(cli.main, ['--help'])
+    assert "Usage: cscli" in result.output
+    help_result = runner.invoke(cli.main, ["--help"])
     assert help_result.exit_code == 0
-    assert '--help  Show this message and exit.' in help_result.output
+    assert "Usage: cscli [OPTIONS] COMMAND [ARGS]..." in help_result.output
