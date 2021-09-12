@@ -5,7 +5,7 @@
 import pytest
 from click.testing import CliRunner
 
-from cscli import cli, CloudSigmaClient
+from cscli import cli
 
 
 @pytest.fixture

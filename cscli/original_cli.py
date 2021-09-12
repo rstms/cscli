@@ -1,75 +1,3 @@
-import os
-import sys
-
-import click
-
-from .api_client import CloudSigmaClient
-
-CONTEXT_SETTINGS = dict(auto_envvar_prefix="CSCLI")
-
-
-class Environment:
-    def __init__(self):
-        self.verbose = False
-        self.home = os.getcwd()
-
-    def log(self, msg, *args):
-        """Logs a message to stderr."""
-        if args:
-            msg %= args
-        click.echo(msg, file=sys.stderr)
-
-    def vlog(self, msg, *args):
-        """Logs a message to stderr only if verbose is enabled."""
-        if self.verbose:
-            self.log(msg, *args)
-
-
-pass_environment = click.make_pass_decorator(Environment, ensure=True)
-cmd_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), "commands"))
-
-class ComplexCLI(click.MultiCommand):
-    def list_commands(self, ctx):
-        rv = []
-        for filename in os.listdir(cmd_folder):
-            if filename.endswith(".py") and filename.startswith("cmd_"):
-                rv.append(filename[4:-3])
-        rv.sort()
-        return rv
-
-    def get_command(self, ctx, name):
-        try:
-            mod = __import__(f"complex.commands.cmd_{name}", None, None, ["cli"])
-        except ImportError:
-            return
-        return mod.cli
-
-@click.command(cls=ComplexCLI, context_settings=CONTEXT_SETTINGS)
-@click.version_option()
-@click.option(
-    "-u", "--username", type=str, help="override env var CLOUDSIGMA_USERNAME]"
-)
-@click.option(
-    "-p", "--password", type=str, help="override env var CLOUDSIGMA_PASSWORD]"
-)
-@click.option("-r", "--region", type=str, help="override env var CLOUDSIGMA_REGION]")
-@click.option(
-    "-d", "--debug", is_flag=True, help="output full stacktrace on runtime error"
-)
-@click.option("-v", "--verbose", is_flag=True, help="Enables verbose mode.")
-@pass_environment
-@click.pass_context
-def main(ctx, region, username, password, debug, verbose):
-    """CLI for CloudSigma
-
-    create, manage, and destroy resources in the cloudsigma region
-    """
-
-def cli(ctx, verbose, home):
-    """A complex command line interface."""
-    ctx.verbose = verbose
-    if home is not None:
-        ctx.home = home
 #!/usr/bin/env python3
 
 import sys
@@ -83,8 +11,29 @@ MIN_DISK = "512M"
 
 PASSWORD_LEN = 24
 
+from .client import CloudSigmaClient
 from .server import Server
 from .util import output, error, mkpasswd
+
+
+@click.group(name="cscli")
+@click.version_option()
+@click.option(
+    "-u", "--username", type=str, help="override env var CLOUDSIGMA_USERNAME]"
+)
+@click.option(
+    "-p", "--password", type=str, help="override env var CLOUDSIGMA_PASSWORD]"
+)
+@click.option("-r", "--region", type=str, help="override env var CLOUDSIGMA_REGION]")
+@click.option(
+    "-d", "--debug", is_flag=True, help="output full stacktrace on runtime error"
+)
+@click.pass_context
+def main(ctx, region, username, password, debug):
+    """CLI for CloudSigma
+
+    create, manage, and destroy resources in the cloudsigma region
+    """
 
     ctx.show_default = True
     ctx.auto_envvar_prefix = "CCS_"
