@@ -9,6 +9,8 @@ trim_trailing_whitespace = true
 insert_final_newline = true
 charset = utf-8
 end_of_line = lf
+[*.py]
+profile = black
 
 [*.bat]
 indent_style = tab
