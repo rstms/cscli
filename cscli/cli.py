@@ -1,9 +1,9 @@
 import json
 import os
 import sys
-import yaml
 
 import click
+import yaml
 
 from cscli import CloudSigmaClient, __description__, __version__
 
@@ -14,7 +14,7 @@ class Environment:
     def __init__(self):
         self.verbose = False
         self.compact = False
-        self.fmt = 'json'
+        self.fmt = "json"
         self.api = None
 
     def log(self, msg, *args):
@@ -26,15 +26,19 @@ class Environment:
 
     def output(self, item, status=True):
         if self.compact:
-            json_indent=None
-            json_separators=[',',':']
+            json_indent = None
+            json_separators = [",", ":"]
         else:
-            json_indent=2
-            json_separators =[', ', ': ']
-        if self.fmt=='yaml':
+            json_indent = 2
+            json_separators = [", ", ": "]
+        if self.fmt == "yaml":
             out = yaml.dump(item)
         else:
-            out = json.dumps(dict(status=status, result=item), indent=json_indent, separators=json_separators)
+            out = json.dumps(
+                dict(status=status, result=item),
+                indent=json_indent,
+                separators=json_separators,
+            )
         click.echo(out)
 
     def error(self, message):
@@ -59,7 +63,7 @@ class ComplexCLI(click.MultiCommand):
         rv = []
         for filename in os.listdir(cmd_folder):
             if filename.endswith(".py") and filename.startswith("cmd_"):
-                print(f'filename={filename}')
+                print(f"filename={filename}")
                 rv.append(filename[4:-3])
         rv.sort()
         return rv
@@ -85,9 +89,9 @@ class ComplexCLI(click.MultiCommand):
     "-d", "--debug", is_flag=True, help="output full stacktrace on runtime error"
 )
 @click.option("-v", "--verbose", is_flag=True, help="Enables verbose mode.")
-@click.option('-c', '--compact', is_flag=True, help='Output Compact JSON')
-@click.option('-y', '--yaml', is_flag=True, help='Output YAML')
-@click.option('-j', '--json', is_flag=True, help='Output JSON')
+@click.option("-c", "--compact", is_flag=True, help="Output Compact JSON")
+@click.option("-y", "--yaml", is_flag=True, help="Output YAML")
+@click.option("-j", "--json", is_flag=True, help="Output JSON")
 @pass_environment
 def cli(ctx, region, username, password, debug, verbose, compact, yaml, json):
     """CLI for the CloudSigma API
@@ -108,8 +112,8 @@ def cli(ctx, region, username, password, debug, verbose, compact, yaml, json):
     ctx.verbose = verbose
     ctx.compact = compact
     if yaml:
-        ctx.fmt = 'yaml'
+        ctx.fmt = "yaml"
     if json:
-        ctx.fmt = 'json'
+        ctx.fmt = "json"
 
     ctx.api = CloudSigmaClient(region, username, password)
