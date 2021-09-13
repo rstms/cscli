@@ -1,17 +1,20 @@
 import json
 import os
 import sys
+import yaml
 
 import click
 
-from cscli import CloudSigmaClient
+from cscli import CloudSigmaClient, __description__, __version__
 
-CONTEXT_SETTINGS = dict(auto_envvar_prefix="CLOUDSIGMA")
+CONTEXT_SETTINGS = dict(auto_envvar_prefix="CSCLI")
 
 
 class Environment:
     def __init__(self):
         self.verbose = False
+        self.compact = False
+        self.fmt = 'json'
         self.api = None
 
     def log(self, msg, *args):
@@ -22,7 +25,17 @@ class Environment:
             click.echo(msg, file=sys.stderr)
 
     def output(self, item, status=True):
-        click.echo(json.dumps(dict(status=status, result=item), indent=2))
+        if self.compact:
+            json_indent=None
+            json_separators=[',',':']
+        else:
+            json_indent=2
+            json_separators =[', ', ': ']
+        if self.fmt=='yaml':
+            out = yaml.dump(item)
+        else:
+            out = json.dumps(dict(status=status, result=item), indent=json_indent, separators=json_separators)
+        click.echo(out)
 
     def error(self, message):
         self.output(message, False)
@@ -46,6 +59,7 @@ class ComplexCLI(click.MultiCommand):
         rv = []
         for filename in os.listdir(cmd_folder):
             if filename.endswith(".py") and filename.startswith("cmd_"):
+                print(f'filename={filename}')
                 rv.append(filename[4:-3])
         rv.sort()
         return rv
@@ -58,8 +72,8 @@ class ComplexCLI(click.MultiCommand):
         return mod.cli
 
 
-@click.command(cls=ComplexCLI, context_settings=CONTEXT_SETTINGS)
-@click.version_option()
+@click.command("cscli", cls=ComplexCLI, context_settings=CONTEXT_SETTINGS)
+@click.version_option(message=f"{__package__} v{__version__} -- {__description__}")
 @click.option(
     "-u", "--username", type=str, help="override env var CLOUDSIGMA_USERNAME]"
 )
@@ -71,9 +85,11 @@ class ComplexCLI(click.MultiCommand):
     "-d", "--debug", is_flag=True, help="output full stacktrace on runtime error"
 )
 @click.option("-v", "--verbose", is_flag=True, help="Enables verbose mode.")
+@click.option('-c', '--compact', is_flag=True, help='Output Compact JSON')
+@click.option('-y', '--yaml', is_flag=True, help='Output YAML')
+@click.option('-j', '--json', is_flag=True, help='Output JSON')
 @pass_environment
-@click.pass_context
-def cli(ctx, region, username, password, debug, verbose):
+def cli(ctx, region, username, password, debug, verbose, compact, yaml, json):
     """CLI for the CloudSigma API
 
     create, modify, operate, and destroy resources on cloudsigma
@@ -89,4 +105,11 @@ def cli(ctx, region, username, password, debug, verbose):
 
     sys.excepthook = exception_handler
 
-    ctx.api = CloudSigmaClient(region, username, password, verbose)
+    ctx.verbose = verbose
+    ctx.compact = compact
+    if yaml:
+        ctx.fmt = 'yaml'
+    if json:
+        ctx.fmt = 'json'
+
+    ctx.api = CloudSigmaClient(region, username, password)

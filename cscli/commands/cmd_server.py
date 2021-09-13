@@ -20,7 +20,7 @@ def mkpasswd(length):
 
 
 @click.group(name="server")
-@click.argument("name", type=str, metavar="SERVER")
+@click.argument("name", type=str, metavar="SERVER_NAME_OR_UUID")
 @pass_environment
 def cli(ctx, name):
     """server actions: create list show destroy attach detach start stop ttyopen, ttyclose, shutdown"""
@@ -177,7 +177,7 @@ def tty(ctx, close, exec_command, password):
                 cmd = f"{pipe}{exec_command} {addr} {port}"
                 exit_code = subprocess.call(cmd, shell=True)
                 ret = f"subprocess returned {exit_code}"
-    ctx.output(ret)
+        ctx.output(ret)
 
 
 @cli.command()

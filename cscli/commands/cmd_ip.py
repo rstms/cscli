@@ -2,18 +2,18 @@
 
 import click
 
-from cscli import pass_environment
+from cscli.cli import pass_environment
 
 
-@click.group(name="ip")
+@click.group(name="ip", short_help="manage ip addresses")
 @click.argument("name", metavar="IP", type=str)
 @pass_environment
-def ip(ctx, name):
+def cli(ctx, name):
     """IP commands: create list show modify destroy"""
     ctx.ip_name = name
 
 
-@ip.command()
+@cli.command()
 @click.option("-d", "--duration", type=int, default=1)
 @click.option(
     "-u", "--units", type=click.Choice(["hour", "day", "month", "year"]), default="day"
@@ -27,14 +27,14 @@ def create(ctx, duration, units, auto_renew):
     ctx.output(ctx.api.create_ip(ctx.ip_name, f"{duration} {units}", auto_renew))
 
 
-@ip.command()
+@cli.command()
 @pass_environment
 def show(ctx):
     """display IP attributes"""
     ctx.output(ctx.api.find_ip(ctx.ip_name))
 
 
-@ip.command()
+@cli.command()
 @click.option("-r", "--rename", type=str)
 @click.option("-D", "--description", type=str)
 # @click.option('-d', '--duration', type=int, default=1)
@@ -57,7 +57,7 @@ def modify(ctx, rename, description):
     ctx.output(ctx.api.ip.update(ip["uuid"], ip))
 
 
-@ip.command()
+@cli.command()
 @click.option("-f", "--force", is_flag=True, help="suppress confirmation prompt")
 @pass_environment
 def destroy(ctx, force):

@@ -8,12 +8,11 @@ from .error import ParameterError, ResourceNotFound
 
 
 class CloudSigmaClient(object):
-    def __init__(self, region=None, username=None, password=None, verbose=False):
+    def __init__(self, region=None, username=None, password=None):
 
         region = region or os.getenv("CLOUDSIGMA_REGION")
         username = username or os.getenv("CLOUDSIGMA_USERNAME")
         password = password or os.getenv("CLOUDSIGMA_PASSWORD")
-        self.verbose = verbose
 
         # use hack to pass credentials directly to pycloudsigma module
         # See github issue:
@@ -184,14 +183,14 @@ class CloudSigmaClient(object):
         return {item["uuid"]: data}
 
     def _list_resources(self, resource, list_format):
-        if list_format:
+        if resource not in (self.subscription, self.capabilities) and list_format:
             resources = resource.list_detail()
         else:
             resources = resource.list()
 
         if list_format == "uuid":
-            resources = [i["uuid"] for i in resources]
-        elif list_format in ["human", "text"]:
+            resources = [{i["uuid"]: None} for i in resources]
+        elif list_format in ["brief", "text"]:
             resources = [
                 self._format_resource(resource, item, list_format) for item in resources
             ]
@@ -213,25 +212,27 @@ class CloudSigmaClient(object):
         return resources
 
     def list_servers(self, list_format):
-        return self._list_resources(self.server, list_format)
+        return dict(servers=self._list_resources(self.server, list_format))
 
     def list_drives(self, list_format):
-        return self._list_resources(self.drive, list_format)
+        return dict(drives=self._list_resources(self.drive, list_format))
 
     def list_vlans(self, list_format):
-        return self._list_resources(self.vlan, list_format)
+        return dict(vlans=self._list_resources(self.vlan, list_format))
 
     def list_ips(self, list_format):
-        return self._list_resources(self.ip, list_format)
+        return dict(ips=self._list_resources(self.ip, list_format))
 
     def list_subscriptions(self, list_format):
-        return self._list_resources(self.subscription, list_format)
+        if list_format not in ["uuid", "detail"]:
+            list_format = "detail"
+        return dict(subscriptions=self._list_resources(self.subscription, list_format))
 
     def list_capabilities(self, list_format):
-        return self._list_resources(self.capabilities, list_format)
+        return dict(capabilities=[self._list_resources(self.capabilities, "detail")])
 
     def _find_resource(self, resource_lister, _type, name):
-        for resource in resource_lister("detail"):
+        for resource in list(resource_lister("detail").values())[0]:
             if name in [resource.get("name"), resource.get("uuid")]:
                 return resource
         raise ResourceNotFound(f"unknown {_type} {name}")

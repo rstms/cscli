@@ -7,7 +7,7 @@ from cscli.cli import pass_environment
 
 
 @click.group("drive", short_help="manage drives")
-@click.argument("drive", metavar="DRIVE", type=str)
+@click.argument("drive", metavar="NAME_OR_UUID", type=str)
 @pass_environment
 def cli(ctx, drive):
     """actions: create destroy list show modify snapshot upload download"""
