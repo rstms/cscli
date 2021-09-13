@@ -3,25 +3,24 @@
 project != basename $$(pwd)
 version != awk <$(project)/__init__.py -F\' '/^__version__/{print $$2}'
 python_src != find . -name \*.py
-other_src := $(call makefiles) LICENSE README.rst setup.cfg tox.ini
+other_src := $(MAKEFILE_LIST) LICENSE README.rst setup.cfg tox.ini
 src := $(python_src) $(other_src)
 
-# list make targets with descriptions
-help:	
-	@set -e;\
-	(for file in $(call makefiles); do\
-	  echo "$$(head -1 $$file)";\
-	  sed <$$file -n -E \
-	  '/^#.*/{h;d}; s/^([[:alnum:]_-]+:).*/\1/; /^[[:alnum:]_-]+:/{G;s/:\n/\t/p}'; \
+help: ## makefile help 
+	@(for file in $(MAKEFILE_LIST); do \
+	  awk <$$file -F: 'BEGIN{first=1;}\
+	    /^#/{if(first){first=0;title=$$0;}}\
+	    /^[a-zA-Z0-9_-]+:.*##/{if(length(title)){print title; title=""};\
+	      printf("%s\t%s\n", $$1, gensub(/.*##(.*)$$/,"\\1",1));}';\
 	done) | awk -F'#' \
-	  'BEGIN{ first=1; print ".TS"; print "tab(#),box,nowarn;" } \
-	  /^#/{ if(first){ first=0; } else { print ".T&"; print "_ _"; } \
-	  print "cw(1i) s"; print "_ _"; print "c | l ."; print $$2; next; } \
+	  'BEGIN{ first=1; print ".TS"; print "box,nowarn;" } \
+	  /^#/{ if(first){first=0;} else { print ".T&"; print "_ _"; } \
+	  print "cz sz"; print "_ _"; print "l | l ."; print $$2; next; } \
 	  {print} END{print ".TE";}' |\
 	tbl | groff  -T utf8 | awk 'NF';
+	  
 
-# break with an error if there are uncommited changes
-gitclean:
+gitclean: ## break with an error if there are uncommited changes
 	$(if $(shell git status --porcelain),$(error "git status dirty, commit and push first"))
 
 
@@ -33,8 +32,11 @@ define verify_action =
 	),$(info Confirmed),$(error Cowardy refusing))
 endef
 
-# generate a list of makefiles
-makefiles = Makefile $(wildcard make.include/*.mk)
-
 # return a list of matching include makefile targets
-included = $(foreach file,$(makefiles),$(shell sed <$(file) -n 's/^\([[:alnum:]_-]*-$(1)\):.*/\1/p;'))
+included = $(foreach file,$(MAKEFILE_LIST),$(shell sed <$(file) -n 's/^\([[:alnum:]_-]*-$(1)\):.*/\1/p;'))
+
+common-clean: # clean up python cruft
+	find . -name '*.pyc' -exec rm -f {} +
+	find . -name '*.pyo' -exec rm -f {} +
+	find . -name '*~' -exec rm -f {} +
+	find . -name '__pycache__' -exec rm -fr {} +

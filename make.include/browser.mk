@@ -1,4 +1,4 @@
-# browser: run the system's browser if available
+# browser - function to run the system's browser if available
 
 define BROWSER_PYSCRIPT
 import os, webbrowser, sys

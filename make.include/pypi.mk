@@ -9,14 +9,12 @@ dist: .dist ## create distributable files if sources have changed
 	python -m build
 	@touch $@
 
-# add a release tag to the current commit and git push it
-release: dist 
+release: dist ## add a release tag to the current commit and git push it
 	@echo pushing Release $(project) v$(version) to github...
 	git tag -a 'v$(version)' -m 'Release v$(version)'
 	git push origin 'v$(version)'
 	
-# publish to pypi
-pypi-publish: release
+publish: release ## publish to pypi
 	$(call require_pypi_config)
 	$(call verify_action,publish to PyPi)
 	@set -e\
@@ -27,14 +25,17 @@ pypi-publish: release
 	  echo $(project) $(version) is up-to-date on PyPI;\
 	fi
 
-# check current pypi version 
-pypi-check:
+pypi-check: ## check current pypi version 
 	$(call require_pypi_config)
 	@echo '$(project) local=$(version) pypi=$(call check_pypi_version)'
 
-pypi-clean:
+pypi-clean: # clean up build files
 	rm -f .dist
-	rm -rf .tox
+	rm -fr build/
+	rm -fr dist/
+	rm -fr .eggs/
+	find . -name '*.egg-info' -exec rm -fr {} +
+	find . -name '*.egg' -exec rm -f {} +
 
 # functions
 define require_pypi_config =
@@ -49,3 +50,4 @@ $(if $(1),$(1),$(error $(2)))
 endef
 
 check_pypi_version = $(call check_null,$(pypi_version),PyPi version query failed)
+

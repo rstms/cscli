@@ -1,4 +1,4 @@
-# lint / source format
+# lint - source format and syntax checking
 fmt:  ## blacken python source
 	black $(project) tests
 

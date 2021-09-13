@@ -1,8 +1,8 @@
 # test - testing with pytest and tox
 
-options?=-x
-testfiles?=$(wildcard tests/test_*.py)
-options:=$(if $(test),$(options) -k $(test),$(options))
+options ?= -x
+testfiles ?= $(wildcard tests/test_*.py)
+options := $(if $(test),$(options) -k $(test),$(options))
 
 test: ## run pytest;  example: make options=-svvvx test=cli test 
 	pytest $(options) $(testfiles)
@@ -30,3 +30,9 @@ tox: .tox ## test with tox if sources have changed
 	tox
 	@touch $@
 
+test-clean: # remove test and coverage artifacts
+	rm -f pytest.log
+	rm -fr .tox/
+	rm -f .coverage
+	rm -fr htmlcov/
+	rm -fr .pytest_cache
