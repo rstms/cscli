@@ -31,7 +31,7 @@ setup(
     description="CloudSigma administration CLI",
     entry_points={
         'console_scripts': [
-            'cscli=cscli.cli:main',
+            'cscli=cscli.cli:cli',
         ],
     },
     install_requires=requirements,

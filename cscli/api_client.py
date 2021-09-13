@@ -8,11 +8,12 @@ from .error import ParameterError, ResourceNotFound
 
 
 class CloudSigmaClient(object):
-    def __init__(self, region=None, username=None, password=None):
+    def __init__(self, region=None, username=None, password=None, verbose=False):
 
         region = region or os.getenv("CLOUDSIGMA_REGION")
         username = username or os.getenv("CLOUDSIGMA_USERNAME")
         password = password or os.getenv("CLOUDSIGMA_PASSWORD")
+        self.verbose = verbose
 
         # use hack to pass credentials directly to pycloudsigma module
         # See github issue:

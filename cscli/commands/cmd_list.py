@@ -2,72 +2,51 @@
 
 import click
 
-from .cli import main, output
+from cscli.cli import pass_environment
 
 
-@main.group(name="list")
-@click.option("-d", "--detail", is_flag=True, help="full detailed JSON")
-@click.option("-u", "--uuid", is_flag=True, help="uuids only")
-@click.option("-h", "--human", is_flag=True, help="human-readable JSON")
-@click.option("-t", "--text", is_flag=True, help="text-formatted JSON")
-@click.pass_context
-def list(ctx, detail, uuid, human, text):
+@click.command("list", short_help="list resources by type")
+@click.argument(
+    "resource",
+    type=click.Choice(
+        ["servers", "drives", "vlans", "ips", "subscriptions", "capabilities", "all"]
+    ),
+    default="all",
+)
+@click.option(
+    "-d",
+    "--detail",
+    "output-format",
+    flag_value="detail",
+    help="output full detailed JSON",
+)
+@click.option(
+    "-u", "--uuid", "output-format", flag_value="uudi", help="output uuids only"
+)
+@click.option(
+    "-h",
+    "--human",
+    "output-format",
+    flag_value="human",
+    help="output human-readable JSON",
+)
+@click.option(
+    "-t",
+    "--text",
+    "output-format",
+    flag_value="text",
+    help="output text-formatted JSON",
+)
+@pass_environment
+def cli(ctx, resource, output_format):
     """list servers drives ips venvs capabilities subscriptions all"""
-    ctx.obj.list_format = None
-    if detail:
-        ctx.obj.list_format = "detail"
-    if uuid:
-        ctx.obj.list_format = "uuid"
-    if human:
-        ctx.obj.list_format = "human"
-    if text:
-        ctx.obj.list_format = "text"
-
-
-@list.command()
-@click.pass_context
-def servers(ctx):
-    """list servers"""
-    output(ctx.obj.list_servers(ctx.obj.list_format))
-
-
-@list.command()
-@click.pass_context
-def drives(ctx):
-    """list drives"""
-    output(ctx.obj.list_drives(ctx.obj.list_format))
-
-
-@list.command()
-@click.pass_context
-def vlans(ctx):
-    """list VLANs"""
-    output(ctx.obj.list_vlans(ctx.obj.list_format))
-
-
-@list.command()
-@click.pass_context
-def ips(ctx):
-    """list IPs"""
-    output(ctx.obj.list_ips(ctx.obj.list_format))
-
-
-@list.command()
-@click.pass_context
-def subscriptions(ctx):
-    """list subscriptions"""
-    output(ctx.obj.list_subscriptions(ctx.obj_list_format))
-
-
-@list.command()
-@click.pass_context
-def capabilities(ctx):
-    """list capabilities"""
-    output(ctx.obj.list_capabilities(ctx.obj.list_format))
-
-
-@list.command()
-@click.pass_context
-def all(ctx):
-    """list all"""
-    output(ctx.obj.list_all(ctx.obj.list_format))
+    list_map = {
+        "servers": ctx.api.list_servers,
+        "drives": ctx.api.list_drives,
+        "vlans": ctx.api.list_vlans,
+        "ips": ctx.api.list_ips,
+        "subscriptions": ctx.api.list_subscriptions,
+        "capabilities": ctx.api.list_capabilities,
+        "all": ctx.api.list_all,
+    }
+    ctx.output(list_map[resource](output_format))
