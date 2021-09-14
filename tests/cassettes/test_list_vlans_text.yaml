@@ -1,0 +1,128 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Authorization:
+      - DUMMY
+      Connection:
+      - keep-alive
+      content-type:
+      - application/json
+      user-agent:
+      - CloudSigma turlo client
+    method: GET
+    uri: https://sjc.cloudsigma.com/api/2.0/vlans/detail/?limit=0
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAACA41RTW+DMAz9KyjnZYEAKd1tu+xSaT9gmlAIpsoWEpSP9oD635fQFqFJm3azn+3n
+        9+wZjeA5espmpOQofYzyhwyZYXBwT7zxXLXCBJ2Q4pLq3ScI72L6PiOulBHcS6PbyRh1Q3twwsop
+        wRFAKE7JPkWvh7eX50PKNR9hg1w+ItYZ783YnhTXrefHWNZBqVg4Wq49wMKeGlfdPxZNVp64h0xq
+        bzl2YE9gMw3+bOzXdqlTcoowWuycNdiFzIIzwQpog5Wpi/BJEvqYkxCZSLkvm3ooGG56QXHV9RXe
+        D7TBZVdQNjQiZ0yQtCSEq9f/DCwKJrCjdC56WA3+KiXdxpGcVrzuaI5LOgCuhorjju1yLOhAOStr
+        RnfVouV6gpXWhW57r/n6lYLVuz1lf63dDjpyGyCL+violf9u/T/64ssv3wk974mCAgAA
+    headers:
+      CF-Cache-Status:
+      - DYNAMIC
+      CF-RAY:
+      - 68e75579d826675b-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Security-Policy:
+      - 'default-src ''self'' http: https: data: blob: ws: ''unsafe-inline'' ''unsafe-eval'';'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Tue, 14 Sep 2021 05:49:46 GMT
+      Expect-CT:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      - Cookie
+      X-API-Version:
+      - Sulfur.prod.75e5730dbade+
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-REQUEST-ID:
+      - 132377b8-1e90-42ec-b59f-a4d4ec0425d8
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Authorization:
+      - DUMMY
+      Connection:
+      - keep-alive
+      content-type:
+      - application/json
+      user-agent:
+      - CloudSigma turlo client
+    method: GET
+    uri: https://sjc.cloudsigma.com/api/2.0/vlans/detail/?limit=0
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAACA41RTW+DMAz9KyjnZYEAKd1tu+xSaT9gmlAIpsoWEpSP9oD635fQFqFJm3azn+3n
+        9+wZjeA5espmpOQofYzyhwyZYXBwT7zxXLXCBJ2Q4pLq3ScI72L6PiOulBHcS6PbyRh1Q3twwsop
+        wRFAKE7JPkWvh7eX50PKNR9hg1w+ItYZ783YnhTXrefHWNZBqVg4Wq49wMKeGlfdPxZNVp64h0xq
+        bzl2YE9gMw3+bOzXdqlTcoowWuycNdiFzIIzwQpog5Wpi/BJEvqYkxCZSLkvm3ooGG56QXHV9RXe
+        D7TBZVdQNjQiZ0yQtCSEq9f/DCwKJrCjdC56WA3+KiXdxpGcVrzuaI5LOgCuhorjju1yLOhAOStr
+        RnfVouV6gpXWhW57r/n6lYLVuz1lf63dDjpyGyCL+violf9u/T/64ssv3wk974mCAgAA
+    headers:
+      CF-Cache-Status:
+      - DYNAMIC
+      CF-RAY:
+      - 68e7557b0bc3287b-DFW
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Security-Policy:
+      - 'default-src ''self'' http: https: data: blob: ws: ''unsafe-inline'' ''unsafe-eval'';'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Tue, 14 Sep 2021 05:49:46 GMT
+      Expect-CT:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      - Cookie
+      X-API-Version:
+      - Sulfur.prod.75e5730dbade+
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-REQUEST-ID:
+      - 5df6288a-7e78-462b-8254-b19bb37dbbf5
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+version: 1

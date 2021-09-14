@@ -3,12 +3,35 @@
 """conftest.py"""
 
 from pprint import pprint
+from pathlib import Path
+import os
 
 import pytest
 from click.testing import CliRunner
 
 from cscli import cli
 
+# tests use pytest-vcr to record/replay API interaction
+# to perform live tests against the API, valid credentials are required
+# use --vcr-record=all to create new recordings
+# use --vcr-record=none to use stored recordings
+# when using recordings, these environment vars are set
+DUMMY_API_AUTH={
+    'CLOUDSIGMA_USERNAME': 'user@example.org',
+    'CLOUDSIGMA_PASSWORD': '$uper$ecret',
+    'CLOUDSIGMA_REGION': 'sjc'
+}
+
+@pytest.fixture(scope='session', autouse=True)
+def api_config_vars():
+    for var,value in DUMMY_API_AUTH.items():
+        if not var in os.environ:
+            os.environ[var]=value
+
+# don't save password in pytest-vcr recordings
+@pytest.fixture(scope='module')
+def vcr_config():
+    return { "filter_headers": [('Authorization', 'DUMMY')],}
 
 class FixtureRunner:
     def __init__(self):

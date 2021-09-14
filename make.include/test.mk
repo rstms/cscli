@@ -1,8 +1,18 @@
 # test - testing with pytest and tox
 
-options ?= -x
+ifdef CLOUDSIGMA_PASSWORD
+$(info cloudsigma password present; recording tests)
+vcr := --vcr-record=all
+else
+$(info cloudsigma password not found; testing with recorded API sessions)
+vcr := --vcr-record=none
+endif
+
+options ?= -x $(vcr)
 testfiles ?= $(wildcard tests/test_*.py)
 options := $(if $(test),$(options) -k $(test),$(options))
+
+
 
 test: ## run pytest;  example: make options=-svvvx test=cli test 
 	pytest $(options) $(testfiles)
@@ -36,3 +46,4 @@ test-clean: # remove test and coverage artifacts
 	rm -f .coverage
 	rm -fr htmlcov/
 	rm -fr .pytest_cache
+	rm -rf tests/cassettes/*
