@@ -16,7 +16,7 @@ release: dist ## add a release tag to the current commit and git push it
 publish: release ## publish to pypi
 	$(call require_pypi_config)
 	$(call verify_action,publish to PyPi)
-	@set -e\
+	set -e\
 	if [ "X$(version)X" != "X$(pypi_version)X" ]; then \
 	  echo publishing $(project) $(version) to PyPI...;\
 	  python -m twine upload dist/*;\
