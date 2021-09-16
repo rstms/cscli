@@ -1,7 +1,7 @@
 # common - initialization, variables, functions
 
 project != basename $$(pwd)
-version != awk <$(project)/__init__.py -F\' '/^__version__/{print $$2}'
+version != awk <$(project)/__init__.py -F"[\"']" '/^__version__/{print $$2}'
 python_src != find . -name \*.py
 other_src := $(MAKEFILE_LIST) LICENSE README.rst setup.cfg tox.ini
 src := $(python_src) $(other_src)

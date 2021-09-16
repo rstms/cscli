@@ -1,5 +1,8 @@
 # top-level Makefile 
 
+default:
+	$(MAKE) help
+
 install: ## install to the local environment from the source directory
 	pip install --use-feature=in-tree-build --upgrade .
 

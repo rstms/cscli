@@ -2,12 +2,13 @@
 
 
 ifdef CLOUDSIGMA_PASSWORD
-$(info cloudsigma password present; recording tests)
+vcr_mode_message := "CLOUDSIGMA_PASSWORD is set; recording tests"
 vcr := --vcr-record=all
 else
-$(info cloudsigma password not found; testing with recorded API sessions)
+vcr_mode_message := "CLOUDSIGMA_PASSWORD not set; testing with recorded API sessions"
 vcr := --vcr-record=none
 endif
+
 
 options ?= -x $(vcr)
 testfiles ?= $(wildcard tests/test_*.py)
@@ -16,9 +17,11 @@ options := $(if $(test),$(options) -k $(test),$(options))
 
 
 test: ## run pytest;  example: make options=-svvvx test=cli test 
+	@echo $(vcr_mode_message)
 	pytest $(options) $(testfiles)
 
 debug: ## run pytest, dropping into pdb on exceptions or breakpoints
+	@echo $(vcr_mode_message)
 	${MAKE} options="$(options) -xvvvs --pdb" test
 
 coverage: ## check code coverage quickly with the default Python
