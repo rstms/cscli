@@ -2,7 +2,7 @@
 
 __author__ = """Matt Krueger"""
 __email__ = "mkrueger@rstms.net"
-__version__ = "0.5.0"
+__version__ = "0.5.1"
 __description__ = "CloudSigma API command line interface"
 __timestamp__ = "2021-09-16T02:07:07-05:00"
 
