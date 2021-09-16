@@ -2,8 +2,8 @@
 
 docs: docs-clean ## generate Sphinx HTML documentation, including API docs
 	sphinx-apidoc -o docs/ cscli
-	$(MAKE) -C docs html
 	$(MAKE) -C docs clean
+	$(MAKE) -C docs html
 	$(browser) docs/_build/html/index.html
 
 docs-clean: # clean up documentation files to regenerate
