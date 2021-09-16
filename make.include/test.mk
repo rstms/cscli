@@ -47,4 +47,3 @@ test-clean: # remove test and coverage artifacts
 	rm -f .coverage
 	rm -fr htmlcov/
 	rm -fr .pytest_cache
-	rm -rf tests/cassettes/*

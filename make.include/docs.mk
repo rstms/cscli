@@ -9,6 +9,7 @@ docs: docs-clean ## generate Sphinx HTML documentation, including API docs
 docs-clean: # clean up documentation files to regenerate
 	rm -f docs/cscli.rst
 	rm -f docs/modules.rst
+	rm -f docs/cscli.commands.rst
 	$(MAKE) -C docs clean
 
 servedocs: docs ## compile the docs watching for changes
