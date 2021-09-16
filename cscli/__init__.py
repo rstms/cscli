@@ -2,7 +2,7 @@
 
 __author__ = """Matt Krueger"""
 __email__ = "mkrueger@rstms.net"
-__version__ = "0.2.2"
+__version__ = "0.3.0"
 __description__ = "CloudSigma API command line interface"
 
 from .api_client import CloudSigmaClient
