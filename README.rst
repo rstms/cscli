@@ -6,13 +6,12 @@ cscli
 .. image:: https://img.shields.io/pypi/v/cscli.svg
         :target: https://pypi.python.org/pypi/cscli
 
-.. image:: https://img.shields.io/travis/rstms/cscli.svg
-        :target: https://travis-ci.com/rstms/cscli
+.. image:: https://circleci.com/gh/rstms/cscli/tree/master.svg?style=shield
+        :target: https://circleci.com/gh/rstms/cscli/tree/master
 
 .. image:: https://readthedocs.org/projects/cscli/badge/?version=latest
         :target: https://cscli.readthedocs.io/en/latest/?version=latest
         :alt: Documentation Status
-
 
 .. image:: https://pyup.io/repos/github/rstms/cscli/shield.svg
      :target: https://pyup.io/repos/github/rstms/cscli/
