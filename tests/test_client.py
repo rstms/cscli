@@ -28,6 +28,7 @@ def _verify(ret, keys):
         for resource in value:
             assert isinstance(resource, dict)
 
+
 @pytest.mark.vcr()
 def test_client_list_servers_none(api):
     _verify(api.list_servers(None), ["servers"])

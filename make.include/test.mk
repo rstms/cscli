@@ -1,5 +1,6 @@
 # test - testing with pytest and tox
 
+
 ifdef CLOUDSIGMA_PASSWORD
 $(info cloudsigma password present; recording tests)
 vcr := --vcr-record=all
