@@ -9,10 +9,20 @@ dist: .dist ## create distributable files if sources have changed
 	#python -m build
 	@touch $@
 
+release-patch:
+	${MAKE} release_level=patch release
+
+release-minor:
+	${MAKE} release_level=minor release
+
+release-major:
+	${MAKE} release_level=majro release
+
+release_level ?= minor 
+
 release: dist ## add a release tag to the current commit and git push it
-	@echo pushing Release $(project) v$(version) to github...
-	git tag -a 'v$(version)' -m 'Release v$(version)'
-	git push origin 'v$(version)'
+	@echo pushing Release to github and PyPi...
+	bumpversion $(release_level) --tag-message 'Release v{new_version} {now:%d.%m.%Y}'
 	
 publish: release ## publish to pypi
 	$(call require_pypi_config)
