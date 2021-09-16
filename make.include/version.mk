@@ -15,7 +15,7 @@ bump-major: ## bump version, reset minor and patch to zero
 
 timestamp: .timestamp ## update timestamp if sources have changed
 .timestamp: $(src)
-	@sed -i  -E repeat/version.py -e "s/(.*__timestamp__.*=).*/\\1 '$(date -Isec)'/"
+	sed -E -i $(project)/__init__.py -e "s/(.*__timestamp__.*=).*/\1 \"$$(date -Isec)\"/"
 	@touch $@
 	@echo "Timestamp Updated."
 
