@@ -5,8 +5,8 @@ dist: .dist ## create distributable files if sources have changed
 .dist:	gitclean tox
 	@echo Changed files: $?
 	@echo Building $(project)
-	#python setup.py sdist bdist_wheel
-	python -m build
+	python setup.py sdist bdist_wheel
+	#python -m build
 	@touch $@
 
 release: dist ## add a release tag to the current commit and git push it
