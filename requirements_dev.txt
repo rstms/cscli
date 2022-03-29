@@ -9,7 +9,7 @@ coverage==6.0
 Sphinx==4.2.0
 isort==5.9.3
 twine==3.4.2
-Click==8.0.1
+Click==8.1.0
 pytest==6.2.5
 black==21.9b0
 pyyaml==5.4.1
