@@ -63,7 +63,6 @@ class ComplexCLI(click.MultiCommand):
         rv = []
         for filename in os.listdir(cmd_folder):
             if filename.endswith(".py") and filename.startswith("cmd_"):
-                print(f"filename={filename}")
                 rv.append(filename[4:-3])
         rv.sort()
         return rv

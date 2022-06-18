@@ -10,7 +10,7 @@ from cscli.error import ParameterError
 @click.argument(
     "resource",
     type=click.Choice(
-        ["servers", "drives", "vlans", "ips", "subscriptions", "capabilities"]
+        ["servers", "drives", "libdrives", "vlans", "ips", "subscriptions", "capabilities"]
     ),
     metavar="RESOURCE_TYPE",
     required=False,
@@ -42,12 +42,14 @@ from cscli.error import ParameterError
     flag_value="text",
     help="text output",
 )
+@click.option('-f', '--filter', '_filter', type=str, multiple=True)
 @pass_environment
-def cli(ctx, resource, fmt):
-    """list resources: servers drives ips venvs capabilities subscriptions"""
+def cli(ctx, resource, fmt, _filter):
+    """list resources: servers drives libdrives ips venvs capabilities subscriptions"""
     list_map = {
         "servers": ctx.api.list_servers,
         "drives": ctx.api.list_drives,
+        "libdrives": ctx.api.list_libdrives,
         "vlans": ctx.api.list_vlans,
         "ips": ctx.api.list_ips,
         "subscriptions": ctx.api.list_subscriptions,
@@ -61,7 +63,9 @@ def cli(ctx, resource, fmt):
     if resource == "subscriptions" and fmt not in [None, "uuid", "detail"]:
         raise ParameterError(f"{resource} cannot be formatted as {fmt}")
 
-    ret = list_map[resource](fmt)
+    _filter = list(_filter)
+
+    ret = list_map[resource](fmt, _filter)
     if fmt == "text":
         click.echo("=" * 79)
         for name, data in ret.items():

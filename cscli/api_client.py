@@ -3,6 +3,7 @@
 import os
 
 import requests
+from importlib import import_module
 
 from .error import ParameterError, ResourceNotFound
 
@@ -23,7 +24,10 @@ class CloudSigmaClient(object):
 
         # allow pycloudsigma to read a null config file
         os.putenv("CLOUDSIGMA_CONFIG", "/dev/null")
-        import cloudsigma
+
+        # use importlib to import the cloudsigma module
+        # import cloudsigma
+        cloudsigma = import_module("cloudsigma")
 
         # monkeypatch the config values into the module config
         cloudsigma.conf.config.__setitem__(
@@ -49,6 +53,7 @@ class CloudSigmaClient(object):
         self.ip = cloudsigma.resource.IP()
         self.subscription = cloudsigma.resource.Subscriptions()
         self.capabilities = cloudsigma.resource.Capabilites()
+        self.libdrive = cloudsigma.resource.LibDrive()
 
         self.list_format = None
 
@@ -155,6 +160,16 @@ class CloudSigmaClient(object):
         elif resource == self.subscription:
             label = "subscription"
             data = [dict(name=self._get_name(item["uuid"], label)), dict(detail="")]
+        elif resource == self.libdrive:
+            label = 'library_drive'
+            data = [
+                dict(name=item['name']),
+                dict(os=item['os']),
+                dict(version=item['version']),
+                dict(image_type=item['image_type']),
+                dict(media=item['media']),
+                dict(descriptions=item['description'])
+            ]
         else:
             raise ParameterError(f"Unknown resource: {resource}")
 
@@ -182,8 +197,10 @@ class CloudSigmaClient(object):
 
         return {item["uuid"]: data}
 
-    def _list_resources(self, resource, list_format):
-        if resource not in (self.subscription, self.capabilities) and list_format:
+    def _list_resources(self, resource, list_format, _filter=None):
+        if resource == self.libdrive:
+            resources = self.libdrive_search(_filter)
+        elif resource not in (self.subscription, self.capabilities) and list_format:
             resources = resource.list_detail()
         else:
             resources = resource.list()
@@ -202,34 +219,37 @@ class CloudSigmaClient(object):
 
         return resources
 
-    def list_all(self, list_format):
+    def list_all(self, list_format, _filter=None):
         resources = {}
         all_resources = dict(
             servers=self.server, drives=self.drive, vlans=self.vlan, ips=self.ip
         )
         for label, resource in all_resources.items():
-            resources[label] = self._list_resources(resource, list_format)
+            resources[label] = self._list_resources(resource, list_format, _filter)
         return resources
 
-    def list_servers(self, list_format):
-        return dict(servers=self._list_resources(self.server, list_format))
+    def list_servers(self, list_format, _filter=None):
+        return dict(servers=self._list_resources(self.server, list_format, _filter))
 
-    def list_drives(self, list_format):
-        return dict(drives=self._list_resources(self.drive, list_format))
+    def list_drives(self, list_format, _filter=None):
+        return dict(drives=self._list_resources(self.drive, list_format, _filter))
 
-    def list_vlans(self, list_format):
-        return dict(vlans=self._list_resources(self.vlan, list_format))
+    def list_libdrives(self, list_format, _filter=None):
+        return dict(libdrives=self._list_resources(self.libdrive, list_format, _filter))
 
-    def list_ips(self, list_format):
-        return dict(ips=self._list_resources(self.ip, list_format))
+    def list_vlans(self, list_format, _filter=None):
+        return dict(vlans=self._list_resources(self.vlan, list_format, _filter))
 
-    def list_subscriptions(self, list_format):
+    def list_ips(self, list_format, _filter=None):
+        return dict(ips=self._list_resources(self.ip, list_format, _filter))
+
+    def list_subscriptions(self, list_format, _filter=None):
         if list_format not in ["uuid", "detail"]:
             list_format = "detail"
-        return dict(subscriptions=self._list_resources(self.subscription, list_format))
+        return dict(subscriptions=self._list_resources(self.subscription, list_format, _filter))
 
-    def list_capabilities(self, list_format):
-        return dict(capabilities=[self._list_resources(self.capabilities, "detail")])
+    def list_capabilities(self, list_format, _filter=None):
+        return dict(capabilities=[self._list_resources(self.capabilities, "detail", _filter)])
 
     def _find_resource(self, resource_lister, _type, name):
         for resource in list(resource_lister("detail").values())[0]:
@@ -426,3 +446,17 @@ class CloudSigmaClient(object):
         s.headers.update({"Content-Type": "application/octet-stream"})
         r = s.post(self.upload_endpoint, data=input_file)
         return r.text.strip()
+
+    def libdrive_search(self, args):
+        params={}
+        for arg in args:
+            key, _, value = arg.partition('=')
+            if key == 'name_contains':
+                key == 'name__icontains'
+            params[key] = value
+        params['limit'] = 0
+        ret = self.libdrive.list(query_params=params)
+        return ret
+
+
+
