@@ -10,7 +10,15 @@ from cscli.error import ParameterError
 @click.argument(
     "resource",
     type=click.Choice(
-        ["servers", "drives", "libdrives", "vlans", "ips", "subscriptions", "capabilities"]
+        [
+            "servers",
+            "drives",
+            "libdrives",
+            "vlans",
+            "ips",
+            "subscriptions",
+            "capabilities",
+        ]
     ),
     metavar="RESOURCE_TYPE",
     required=False,
@@ -42,7 +50,7 @@ from cscli.error import ParameterError
     flag_value="text",
     help="text output",
 )
-@click.option('-f', '--filter', '_filter', type=str, multiple=True)
+@click.option("-f", "--filter", "_filter", type=str, multiple=True)
 @pass_environment
 def cli(ctx, resource, fmt, _filter):
     """list resources: servers drives libdrives ips venvs capabilities subscriptions"""

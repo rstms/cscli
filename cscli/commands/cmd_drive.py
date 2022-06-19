@@ -32,8 +32,9 @@ def create(ctx, size, media, multimount, storage_type):
         )
     )
 
+
 @cli.command()
-@click.option("-u", "--uuid", type=str, help='UUID of source drive')
+@click.option("-u", "--uuid", type=str, help="UUID of source drive")
 @click.option("-s", "--size", type=str, default=MIN_DISK)
 @click.option("-m", "--media", type=click.Choice(["disk", "cdrom"]), default="disk")
 @click.option(

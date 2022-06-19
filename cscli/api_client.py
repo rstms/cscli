@@ -161,14 +161,14 @@ class CloudSigmaClient(object):
             label = "subscription"
             data = [dict(name=self._get_name(item["uuid"], label)), dict(detail="")]
         elif resource == self.libdrive:
-            label = 'library_drive'
+            label = "library_drive"
             data = [
-                dict(name=item['name']),
-                dict(os=item['os']),
-                dict(version=item['version']),
-                dict(image_type=item['image_type']),
-                dict(media=item['media']),
-                dict(descriptions=item['description'])
+                dict(name=item["name"]),
+                dict(os=item["os"]),
+                dict(version=item["version"]),
+                dict(image_type=item["image_type"]),
+                dict(media=item["media"]),
+                dict(descriptions=item["description"]),
             ]
         else:
             raise ParameterError(f"Unknown resource: {resource}")
@@ -246,10 +246,14 @@ class CloudSigmaClient(object):
     def list_subscriptions(self, list_format, _filter=None):
         if list_format not in ["uuid", "detail"]:
             list_format = "detail"
-        return dict(subscriptions=self._list_resources(self.subscription, list_format, _filter))
+        return dict(
+            subscriptions=self._list_resources(self.subscription, list_format, _filter)
+        )
 
     def list_capabilities(self, list_format, _filter=None):
-        return dict(capabilities=[self._list_resources(self.capabilities, "detail", _filter)])
+        return dict(
+            capabilities=[self._list_resources(self.capabilities, "detail", _filter)]
+        )
 
     def _find_resource(self, resource_lister, _type, name):
         for resource in list(resource_lister("detail").values())[0]:
@@ -346,7 +350,7 @@ class CloudSigmaClient(object):
                 media=media,
                 storage_type=self.map_storage_type(storage_type),
                 allow_multimount=multimount,
-            )
+            ),
         )
 
     def modify_drive(
@@ -460,15 +464,12 @@ class CloudSigmaClient(object):
         return r.text.strip()
 
     def libdrive_search(self, args):
-        params={}
+        params = {}
         for arg in args:
-            key, _, value = arg.partition('=')
-            if key == 'name_contains':
-                key == 'name__icontains'
+            key, _, value = arg.partition("=")
+            if key == "name_contains":
+                key == "name__icontains"
             params[key] = value
-        params['limit'] = 0
+        params["limit"] = 0
         ret = self.libdrive.list(query_params=params)
         return ret
-
-
-
