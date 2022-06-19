@@ -32,6 +32,25 @@ def create(ctx, size, media, multimount, storage_type):
         )
     )
 
+@cli.command()
+@click.option("-u", "--uuid", type=str, help='UUID of source drive')
+@click.option("-s", "--size", type=str, default=MIN_DISK)
+@click.option("-m", "--media", type=click.Choice(["disk", "cdrom"]), default="disk")
+@click.option(
+    "-M", "--multimount", type=click.Choice(["enable", "disable"]), default="disable"
+)
+@click.option(
+    "-t", "--storage-type", type=click.Choice(["ssd", "magnetic"]), default="ssd"
+)
+@pass_environment
+def clone(ctx, uuid, size, media, multimount, storage_type):
+    """create a cloned drive resource from a source drive UUID"""
+    ctx.output(
+        ctx.api.create_clone_drive(
+            ctx.drive_name, uuid, size, media, multimount == "enable", storage_type
+        )
+    )
+
 
 @cli.command()
 @pass_environment

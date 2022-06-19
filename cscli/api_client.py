@@ -337,6 +337,18 @@ class CloudSigmaClient(object):
             )
         )
 
+    def create_clone_drive(self, name, uuid, size, media, multimount, storage_type):
+        return self.drive.clone(
+            uuid=uuid,
+            data=dict(
+                name=name,
+                size=self.convert_memory_value(size),
+                media=media,
+                storage_type=self.map_storage_type(storage_type),
+                allow_multimount=multimount,
+            )
+        )
+
     def modify_drive(
         self, name, rename=None, media=None, multimount=None, storage_type=None
     ):
